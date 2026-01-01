@@ -94,7 +94,12 @@ async function seedDatabase() {
       },
     ];
 
-    // Criar 10 barbearias com nomes e endereços fictícios
+    // Limpar o banco antes de criar novos dados (evita duplicação)
+    await prisma.booking.deleteMany();
+    await prisma.service.deleteMany();
+    await prisma.barbershop.deleteMany();
+
+    // Criar 10 barbearias
     const barbershops = [];
     for (let i = 0; i < 10; i++) {
       const name = creativeNames[i];
@@ -120,15 +125,16 @@ async function seedDatabase() {
                 id: barbershop.id,
               },
             },
-            imageURL: service.imageURL,
+            // CORREÇÃO AQUI: Mudamos de service.imageURL para service.imageUrl
+            imageURL: service.imageUrl, 
           },
         });
       }
 
       barbershops.push(barbershop);
     }
-
-    // Fechar a conexão com o banco de dados
+    
+    console.log("Seeds criadas com sucesso!");
     await prisma.$disconnect();
   } catch (error) {
     console.error("Erro ao criar as barbearias:", error);
