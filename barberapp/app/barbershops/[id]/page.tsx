@@ -1,7 +1,4 @@
-import { Button } from "@/app/_components/ui/button";
 import { db } from "@/app/_lib/prisma";
-import { ChevronLeftIcon, MapPinIcon, MenuIcon, StarIcon } from "lucide-react";
-import Image from "next/image";
 import BarbershopInfo from "./_components/barbershop-info";
 import ServiceItem from "./_components/service-item";
 
@@ -30,13 +27,24 @@ const BarbershopDetailsPage = async ({params} : BarbershopDetailsPageProps) => {
         return null;
     }
 
+    const plainBarbershop = {
+    ...barbershop,
+    services: barbershop.services.map((service) => ({
+      ...service,
+      price: Number(service.price),
+    })),
+  };
+
+
     return (
         <div>
-            <BarbershopInfo barbershop={barbershop} />
+            <BarbershopInfo barbershop={plainBarbershop} />
 
-        {barbershop.services.map((service) => (
+        <div className="px-5 flex flex-col gap-4 py-6">      
+        {plainBarbershop.services.map((service) => (
             <ServiceItem key={service.id} service={service} />
         ))}  
+        </div>
         </div>
         
     );
