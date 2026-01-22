@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/app/_components/ui/card";
 import {
   Sheet,
   SheetContent,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -87,32 +88,20 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
                     <SheetTitle>Fazer Reserva</SheetTitle>
                   </SheetHeader>
 
-                  <Calendar
+                  <div>
+                    <Calendar
                     mode="single"
                     selected={date}
                     onSelect={handleDateClick}
                     locale={ptBR}
                     disabled={{ before: new Date() }}
-                    className="w-full"
-                    classNames={{
-                      months: "w-full",
-                      caption: "w-full relative h-10",
-                      caption_label: "text-sm font-medium capitalize z-10",
-                      table: "w-full",
-                      head_cell: "w-full",
-                      row: "flex w-full",
-                      cell: "w-full",
-                      day: "w-full hover:bg-primary hover:text-white",
-                      nav: "flex justify-between",
-                      nav_button_previous:
-                        "absolute left-1 top-0 bottom-0 my-auto",
-                      nav_button_next:
-                        "absolute right-1 top-0 bottom-0 my-auto",
-                    }}
+                    className="w-full py-0"
+                    
                   />
+                  </div>
 
                   {date && (
-                    <div className="flex gap-3 overflow-x-auto py-6 px-3 border-y border-solid border-secondary [&::-webkit-scrollbar]:hidden">
+                    <div className="flex gap-3 overflow-x-auto overflow-y-hidden py-3 px-3 border-t [&::-webkit-scrollbar]:hidden">
                       {timeList.map((time) => (
                         <Button
                           onClick={() => handleHourClick(time)}
@@ -126,9 +115,9 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
                     </div>
                   )}
 
-                  <div className="py-6 px-5 border-t border-solid border-secondary">
-                    <Card>
-                      <CardContent className="p-3">
+                  <div className="px-1 py-0 flex flex-col gap-3 mb-0">
+                    <Card className="py-4 px-1">
+                      <CardContent className="p-2 flex-col">
                         <div className="flex justify-between">
                           <h2 className="font-bold">{service.name}</h2>
                           <h3 className="font-bold text-sm">
@@ -145,7 +134,8 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
                           <h3 className="text-gray-400">Data</h3>
                           <h4 className="text-sm">{format(date, "dd 'de' MMMM", {
                             locale: ptBR,
-                          })}</h4>
+                          })}
+                          </h4>
                         </div>
                        )}
 
@@ -163,6 +153,12 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
                       </CardContent>
                     </Card>
                   </div>
+
+                  <div>
+                    <SheetFooter className="px-3 py-1">
+                    <Button disabled={!date || !hour}>Confirmar Reserva</Button>
+                  </SheetFooter>
+                  </div>
                 </SheetContent>
               </Sheet>
             </div>
@@ -175,4 +171,4 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
 
 export default ServiceItem;
 
-/*minuto*/
+/* minutos aula 3*/
