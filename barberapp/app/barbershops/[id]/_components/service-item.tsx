@@ -20,6 +20,8 @@ import { generateDayTimeList } from "../_helpers/hours";
 import { format } from "date-fns/format";
 import { saveBooking } from "../_actions/save-booking";
 import { setHours, setMinutes } from "date-fns";
+import { toast } from "sonner";
+import { useRouter } from "next/dist/client/components/navigation";
 
 interface ServiceItemProps {
   barbershop: Barbershop;
@@ -30,10 +32,12 @@ interface ServiceItemProps {
 }
 
 const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps) => {
+  const router = useRouter();
   const {data} = useSession();
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [hour, setHour] = useState<string | undefined>();
   const [submitIsLoading, setSubmitIsLoading] = useState(false);
+  const [sheetIsOpen, setSheetIsOpen] = useState(false);
 
   const handleDateClick = (date: Date | undefined) => {
     setDate(date);
@@ -68,6 +72,19 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
         serviceId: service.id,
         date: newDate,
         userId: data.user.id,
+      });
+
+      setSheetIsOpen(false);
+      setHour(undefined);
+      setDate(undefined);
+      toast.success("Reserva realizada com sucesso!", {
+        description: format(newDate, "dd 'de' MMMM 'às' HH:mm", {
+          locale: ptBR,
+        }),
+        action: {
+          label: "Visualizar",
+          onClick: () => router.push("/bookings"),
+        },
       });
 
     } catch (error) {
@@ -105,7 +122,7 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
                   currency: "BRL",
                 }).format(service.price)}
               </p>
-              <Sheet>
+              <Sheet open={sheetIsOpen} onOpenChange={setSheetIsOpen}>
                 <SheetTrigger asChild>
                   <Button variant="secondary" onClick={handleBookingClick}>
                     Reservar
