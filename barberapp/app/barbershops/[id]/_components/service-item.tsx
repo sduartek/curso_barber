@@ -13,11 +13,13 @@ import {
 } from "@/app/_components/ui/sheet";
 import { Barbershop, Service } from "@prisma/client";
 import { ptBR } from "date-fns/locale";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { generateDayTimeList } from "../_helpers/hours";
 import { format } from "date-fns/format";
+import { saveBooking } from "../_actions/save-booking";
+import { setHours, setMinutes } from "date-fns";
 
 interface ServiceItemProps {
   barbershop: Barbershop;
@@ -28,8 +30,10 @@ interface ServiceItemProps {
 }
 
 const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps) => {
+  const {data} = useSession();
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [hour, setHour] = useState<string | undefined>();
+  const [submitIsLoading, setSubmitIsLoading] = useState(false);
 
   const handleDateClick = (date: Date | undefined) => {
     setDate(date);
@@ -45,7 +49,32 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
       return signIn("google");
     }
 
-    // To do: implementar fluxo de agendamento
+    
+  };
+
+  const handleBookingSubmit = async () => {
+    setSubmitIsLoading(true);
+    try {
+      if (!hour || !date || !data?.user) {
+        return;
+      }
+      const dateHour = Number(hour.split(":")[0]);
+      const dateMinute = Number(hour.split(":")[1]);
+
+      const newDate = setMinutes(setHours(date, dateHour), dateMinute);
+
+      await saveBooking({
+        barbershopId: barbershop.id,
+        serviceId: service.id,
+        date: newDate,
+        userId: data.user.id,
+      });
+
+    } catch (error) {
+      console.log("Error ao salvar reserva:", error);
+    } finally {
+      setSubmitIsLoading(false);
+    }
   };
 
   const timeList = useMemo(() => {
@@ -156,7 +185,7 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
 
                   <div>
                     <SheetFooter className="px-3 py-1">
-                    <Button disabled={!date || !hour}>Confirmar Reserva</Button>
+                    <Button onClick={handleBookingSubmit} disabled={(!date || !hour || submitIsLoading)}>{submitIsLoading ? "Confirmando..." : "Confirmar Reserva"}</Button>
                   </SheetFooter>
                   </div>
                 </SheetContent>
@@ -171,4 +200,4 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
 
 export default ServiceItem;
 
-/* minutos aula 3*/
+/* minuto  da aula 3 */
