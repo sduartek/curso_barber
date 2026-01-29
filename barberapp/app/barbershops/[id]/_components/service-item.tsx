@@ -53,7 +53,7 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
     };
 
     refreshAvailableHours();
-  }, [date]);
+  }, [date, barbershop.id]);
 
   const handleDateClick = (date: Date | undefined) => {
     setDate(date);
@@ -249,4 +249,4 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
 
 export default ServiceItem;
 
-/*   da aula 3 */
+/*iniciar aula 4 */

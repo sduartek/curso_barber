@@ -1,30 +1,43 @@
+import { format } from "date-fns/format";
+import { Booking, Prisma } from "../generated/prisma";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
+import { ptBR } from "date-fns/locale";
 
-const BookingItem = () => {
+interface BookingItemProps {
+    booking: Prisma.BookingGetPayload<{ include: 
+        { service: true, 
+            barbershop: true 
+        }}>;
+}
+
+const BookingItem = ({booking}: BookingItemProps) => {
     return (  
        <Card>
-          <CardContent className="px-5 flex justify-between py-0">
-            <div className="flex flex-col gap-2 py-5">
+          <CardContent className="px-5 flex py-0">
+            <div className="flex flex-col gap-2 py-5 flex-[3]">
                 <Badge className="bg-[#221C3D] text-primary hover:bg-[#221C3D] w-fit">Confirmado</Badge>
-                <h2 className="font-bold">Corte de Cabelo</h2>
+                <h2 className="font-bold">{booking.service.name}</h2>
 
                 <div className="flex items-center gap-2">
                     <Avatar className="h-6 w-6">
-                        <AvatarImage src="https://utfs.io/f/0ddfbd26-a424-43a0-aaf3-c3f1dc6be6d1-1kgxo7.png" />
+                        <AvatarImage src={booking.barbershop.imageURL} />
                         
                         <AvatarFallback>A</AvatarFallback>
                     </Avatar>
 
-                    <h3 className="text-sm">X1 Team Barber</h3>
+                    <h3 className="text-sm">{booking.barbershop.name}</h3>
                 </div>
             </div>
 
-            <div className="flex flex-col items-center justify-center px-3 border-l border-solid border-secondary">
-                <p className="text-sm">Janeiro</p>
-                <p className="text-2xl">08</p>
-                <p className="text-sm">16:20</p>
+            <div className="flex flex-col items-center justify-center flex-1 border-l border-solid border-secondary">
+                <p className="text-sm">{format(booking.date, "MMMM", {
+                    locale: ptBR,
+                } )}
+                </p>
+                <p className="text-2xl">{format(booking.date, "dd")}</p>
+                <p className="text-sm">{format(booking.date, "HH:mm")}</p>
 
             </div>
             
