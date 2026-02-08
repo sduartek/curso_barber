@@ -22,7 +22,17 @@ import { cancelBooking } from "../_actions/cancel-bookings";
 import { toast } from "sonner";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
 
 interface BookingItemProps {
   booking: Prisma.BookingGetPayload<{
@@ -36,17 +46,16 @@ const BookingItem = ({ booking }: BookingItemProps) => {
   const isBookingConfirmed = isFuture(booking.date);
 
   const handleCancelClick = async () => {
-    setIsDeleteLoading(true)
+    setIsDeleteLoading(true);
 
-    try {      
+    try {
       await cancelBooking(booking.id);
       toast.success("Agendamento cancelado com sucesso!");
-
     } catch (error) {
       console.error(error);
-  } finally {
+    } finally {
       setIsDeleteLoading(false);
-    } 
+    }
   };
   return (
     <Sheet>
@@ -118,7 +127,8 @@ const BookingItem = ({ booking }: BookingItemProps) => {
           </div>
           <Badge
             variant={isBookingConfirmed ? "default" : "secondary"}
-            className="w-fit my-3">
+            className="w-fit my-3"
+          >
             {isBookingConfirmed ? "Confirmado" : "Finalizado"}
           </Badge>
 
@@ -159,16 +169,37 @@ const BookingItem = ({ booking }: BookingItemProps) => {
           <SheetFooter className="flex-row w-full gap-3 mt-6">
             <SheetClose asChild>
               <Button className="w-full" variant="secondary">
-              Voltar
-            </Button>
+                Voltar
+              </Button>
             </SheetClose>
-            <Button onClick={handleCancelClick} disabled={!isBookingConfirmed || isDeleteLoading} className="w-full" variant="destructive">
-              {isDeleteLoading && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Cancelar Reserva
-            </Button>
 
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  disabled={!isBookingConfirmed || isDeleteLoading}
+                  className="w-full"
+                  variant="destructive"
+                >
+                  {isDeleteLoading && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Cancelar Reserva
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="w-[90%]">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    your account from our servers.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter className="flex-row gap-3">
+                  <AlertDialogCancel className="w-full mt-0">Cancelar</AlertDialogCancel>
+                  <AlertDialogAction className="w-full">Confirmar</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </SheetFooter>
         </div>
       </SheetContent>
