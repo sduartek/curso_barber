@@ -3,8 +3,9 @@
 import { Card, CardContent } from "@/app/_components/ui/card";
 import Image from "next/image";
 import { Button } from "@/app/_components/ui/button";
-import { Link, MenuIcon } from "lucide-react";
+import {MenuIcon } from "lucide-react";
 import {Sheet, SheetContent, SheetTrigger} from "@/app/_components/ui/sheet";
+import Link from "next/link";
 
 import SideMenu from "./side-menu";
 

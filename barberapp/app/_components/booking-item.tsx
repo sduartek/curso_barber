@@ -42,6 +42,7 @@ interface BookingItemProps {
 
 const BookingItem = ({ booking }: BookingItemProps) => {
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const isBookingConfirmed = isFuture(booking.date);
 
@@ -51,16 +52,18 @@ const BookingItem = ({ booking }: BookingItemProps) => {
     try {
       await cancelBooking(booking.id);
       toast.success("Agendamento cancelado com sucesso!");
+      setIsSheetOpen(false);
     } catch (error) {
       console.error(error);
     } finally {
       setIsDeleteLoading(false);
     }
   };
+
   return (
-    <Sheet>
+    <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
       <SheetTrigger asChild>
-        <Card className="min-w-full">
+        <Card className="min-w-full cursor-pointer">
           <CardContent className="py-0 flex px-0">
             <div className="flex flex-col gap-2 py-2 flex-[3] pl-5">
               <Badge
@@ -75,7 +78,6 @@ const BookingItem = ({ booking }: BookingItemProps) => {
               <div className="flex items-center gap-2">
                 <Avatar className="h-6 w-6">
                   <AvatarImage src={booking.barbershop.imageURL} />
-
                   <AvatarFallback>A</AvatarFallback>
                 </Avatar>
 
@@ -109,7 +111,7 @@ const BookingItem = ({ booking }: BookingItemProps) => {
               alt={booking.barbershop.name}
             />
             <div className="w-full absolute bottom-4 left-0 px-5">
-              <Card className="">
+              <Card>
                 <CardContent className="p-3 flex gap-2">
                   <Avatar>
                     <AvatarImage src={booking.barbershop.imageURL} />
@@ -137,7 +139,6 @@ const BookingItem = ({ booking }: BookingItemProps) => {
               <div className="flex justify-between">
                 <h2 className="font-bold">{booking.service.name}</h2>
                 <h3 className="font-bold text-sm">
-                  {" "}
                   {Intl.NumberFormat("pt-BR", {
                     style: "currency",
                     currency: "BRL",
@@ -168,7 +169,7 @@ const BookingItem = ({ booking }: BookingItemProps) => {
 
           <SheetFooter className="flex-row w-full gap-3 mt-6">
             <SheetClose asChild>
-              <Button className="w-full" variant="secondary">
+              <Button className="flex-1" variant="secondary">
                 Voltar
               </Button>
             </SheetClose>
@@ -177,26 +178,33 @@ const BookingItem = ({ booking }: BookingItemProps) => {
               <AlertDialogTrigger asChild>
                 <Button
                   disabled={!isBookingConfirmed || isDeleteLoading}
-                  className="w-full"
+                  className="flex"
                   variant="destructive"
                 >
-                  {isDeleteLoading && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  )}
                   Cancelar Reserva
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent className="w-[90%]">
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogTitle>Deseja cancelar?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    your account from our servers.
+                    Tem certeza que deseja cancelar este agendamento?
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter className="flex-row gap-3">
-                  <AlertDialogCancel className="w-full mt-0">Cancelar</AlertDialogCancel>
-                  <AlertDialogAction className="w-full">Confirmar</AlertDialogAction>
+                  <AlertDialogCancel className="mt-0">
+                    Cancelar
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    disabled={isDeleteLoading}
+                    
+                    onClick={handleCancelClick}
+                  >
+                    {isDeleteLoading && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    Confirmar
+                  </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
