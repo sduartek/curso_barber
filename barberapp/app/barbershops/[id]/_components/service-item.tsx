@@ -19,7 +19,7 @@ import { useEffect, useMemo, useState } from "react";
 import { generateDayTimeList } from "../_helpers/hours";
 import { format } from "date-fns/format";
 import { saveBooking } from "../_actions/save-booking";
-import { setHours, setMinutes } from "date-fns";
+import { addDays, setHours, setMinutes } from "date-fns";
 import { toast } from "sonner";
 import { useRouter } from "next/dist/client/components/navigation";
 import { getDayBookings } from "../_actions/get-day-bookings";
@@ -172,7 +172,7 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
                     selected={date}
                     onSelect={handleDateClick}
                     locale={ptBR}
-                    disabled={{ before: new Date() }}
+                    disabled={{ before: addDays(new Date(), 1) }}
                     className="w-full py-0"
                     
                   />
@@ -249,4 +249,3 @@ const ServiceItem = ({ service, barbershop, isAuthenticated }: ServiceItemProps)
 
 export default ServiceItem;
 
-/*iniciar aula 4 */
