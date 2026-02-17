@@ -12,7 +12,8 @@ import SideMenu from "./side-menu";
 const Header = () => {
   
   return (
-    <Card>
+    <header>
+      <Card>
       <CardContent className="p-5 justify-between items-center flex flex-row">
         <Link href="/">
           <Image src="/logo.png" alt="Logo" height={18} width={120} />
@@ -31,6 +32,7 @@ const Header = () => {
         </Sheet>
       </CardContent>
     </Card>
+    </header>
   );
 };
 
