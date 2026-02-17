@@ -29,7 +29,9 @@ const Search = ({ defaultValues }: SearchProps) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues,
+    defaultValues: defaultValues || {
+      search: "",
+    },
   });
 
   const handleSubmit = (data: z.infer<typeof formSchema>) => {
