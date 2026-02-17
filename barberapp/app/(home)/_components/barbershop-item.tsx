@@ -6,7 +6,6 @@ import Image from "next/image";
 import { Button } from "@/app/_components/ui/button";
 import { StarIcon } from "lucide-react";
 import { Badge } from "@/app/_components/ui/badge";
-import { use } from "react";
 import { useRouter } from "next/dist/client/components/navigation";
 
 interface BarbershopItemProps {
@@ -20,7 +19,7 @@ const BarbershopItem = ({ barbershop }: BarbershopItemProps) => {
   }
   return (
     <Card className="min-w-full max-w-full rounded-2xl">
-      <CardContent className="px-1 py-0">
+      <CardContent className="px-1 py-0 pt-1">
         <div className="px-1 w-full h-[159px] relative">
             <div className="absolute top-2 left-2 z-50">
         <Badge variant="secondary" className="opacity-90 flex gap-1 items-center top-3 left-3">
